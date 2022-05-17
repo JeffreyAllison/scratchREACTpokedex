@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import { getPokemon } from './services/fetch-utils';
+import LoadingSpinner from './LoadingSpinner';
 
 function App() {
   const [pokemon, setPokemon] = useState([]);
   const [query, setQuery] = useState('');
+  const [loadingSpinner, setLoadingSpinner] = useState(false);
   //console.log(pokemon);
 
   async function load() {
+    setLoadingSpinner(true);
     const {
       data: { results },
     } = await getPokemon(query);
+
+    setLoadingSpinner(false);
 
     setPokemon(results);
   }
@@ -32,15 +37,22 @@ function App() {
         <button>Search Pokemon</button>
       </form>
       <header className="app-header">
-        {pokemon.map(({ pokemon, height, weight, hp, shape }, i) => (
-          <div className='pokemon' key={pokemon + i}>
-            <h3>Name: {pokemon}</h3>
-            <p>Height: {height}</p>
-            <p>Weight: {weight}</p>
-            <p>Health: {hp}</p>
-            <p>Shape: {shape}</p>
-          </div>
-        ))}
+        {loadingSpinner ? (
+          <LoadingSpinner />
+        ) : (
+          pokemon.map(({ pokemon, height, weight, hp, shape, type_1, type_2, ability_1 }, i) => (
+            <div className="pokemon" key={pokemon + i}>
+              <h3>Name: {pokemon}</h3>
+              <p>Height: {height}</p>
+              <p>Weight: {weight}</p>
+              <p>Health: {hp}</p>
+              <p>Shape: {shape}</p>
+              <p>Type 1: {type_1}</p>
+              <p>Type 2: {type_2}</p>
+              <p>Ability 1: {ability_1}</p>
+            </div>
+          ))
+        )}
       </header>
     </div>
   );
